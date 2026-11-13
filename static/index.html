@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fathom</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232337ff'/%3E%3Cpath d='M6 16c3-7 5-7 7 0s4 7 6 0 4-7 7 0' fill='none' stroke='%23fff' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wash" aria-hidden="true"></div>
+
+  <header class="topbar reveal">
+    <div class="brand">
+      <span class="brand-name">Fathom</span>
+      <span class="brand-tag">WiFi motion sensing</span>
+    </div>
+    <div class="link" id="link">
+      <span id="link-text">Connecting…</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero: room state + live path visual -->
+    <section class="hero">
+      <div class="state reveal" style="--d:.05s">
+        <p class="overline">Room state</p>
+        <h1 class="state-word" id="state-word" aria-live="polite"></h1>
+        <p class="state-meta"><span id="state-duration">—</span></p>
+        <p class="state-desc" id="state-desc">Waiting for the first readings from your WiFi adapter.</p>
+      </div>
+
+      <figure class="path reveal" style="--d:.15s" aria-label="Live signal between this PC and the router">
+        <svg viewBox="0 0 480 220" preserveAspectRatio="xMidYMid meet">
+          <line class="tick" x1="48" y1="92" x2="48" y2="128"/>
+          <line class="tick" x1="432" y1="92" x2="432" y2="128"/>
+          <path id="wave-ghost" class="wave ghost"/>
+          <path id="wave" class="wave"/>
+        </svg>
+        <figcaption>
+          <div><span class="cap-label">This PC</span><span class="cap-val" id="cap-adapter">—</span></div>
+          <div class="cap-mid"><span class="cap-label">Path</span><span class="cap-val" id="cap-path">—</span></div>
+          <div class="cap-right"><span class="cap-label">Router</span><span class="cap-val" id="cap-router">—</span></div>
+        </figcaption>
+      </figure>
+    </section>
+
+    <!-- Metrics -->
+    <section class="metrics reveal" style="--d:.25s">
+      <div class="metric">
+        <span class="m-label">Signal</span>
+        <span class="m-value"><b id="m-rssi">—</b><small>dBm</small></span>
+        <span class="m-note" id="m-quality">&nbsp;</span>
+      </div>
+      <div class="metric">
+        <span class="m-label">Variation</span>
+        <span class="m-value"><b id="m-std">—</b><small>dB σ</small></span>
+        <span class="m-note">over the last 3 s</span>
+      </div>
+      <div class="metric">
+        <span class="m-label">Disturbance</span>
+        <span class="m-value"><b id="m-score">—</b><small>%</small></span>
+        <span class="meter"><span id="m-meter"></span><i class="meter-line"></i></span>
+      </div>
+      <div class="metric">
+        <span class="m-label">Calm baseline</span>
+        <span class="m-value"><b id="m-base">—</b><small>dB σ</small></span>
+        <span class="m-note" id="m-base-note">&nbsp;</span>
+      </div>
+    </section>
+
+    <!-- Charts -->
+    <section class="panel charts reveal" style="--d:.35s">
+      <div class="panel-head">
+        <div>
+          <h2>Signal strength</h2>
+          <p class="sub">Last 60 seconds · shaded where movement was detected</p>
+        </div>
+        <div class="legend">
+          <span><i class="lg-line"></i>RSSI</span>
+          <span><i class="lg-band"></i>Movement</span>
+        </div>
+      </div>
+      <div class="chart chart-main"><canvas id="chart-rssi"></canvas></div>
+      <div class="panel-head small">
+        <h3>Disturbance</h3>
+        <p class="sub">Dashed line is the trigger point</p>
+      </div>
+      <div class="chart chart-score"><canvas id="chart-score"></canvas></div>
+    </section>
+
+    <!-- Controls + activity -->
+    <section class="lower">
+      <div class="panel controls reveal" style="--d:.45s">
+        <div class="panel-head"><div><h2>Calibration</h2>
+          <p class="sub">Teach Fathom what your room looks like when nobody moves.</p></div></div>
+
+        <div class="calibrate">
+          <button class="btn" id="btn-cal" type="button">
+            <span class="btn-fill" id="ring-fill" aria-hidden="true"></span>
+            <span class="btn-text" id="btn-cal-text">Calibrate</span>
+          </button>
+          <p class="hint" id="cal-hint">Takes 10 seconds. Stay still and keep the path between this PC and the router clear.</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="slider-head">
+          <label for="sens">Sensitivity</label>
+          <span class="slider-val" id="sens-val">—</span>
+        </div>
+        <input type="range" id="sens" min="0" max="1" step="0.01" value="0.6">
+        <div class="slider-ends"><span>Fewer false alarms</span><span>Catches smaller movement</span></div>
+      </div>
+
+      <div class="panel activity reveal" style="--d:.55s">
+        <div class="panel-head">
+          <div><h2>Activity</h2><p class="sub" id="act-sub">Movement detected this session</p></div>
+          <button class="ghost-btn" id="btn-clear" type="button">Clear</button>
+        </div>
+        <ol class="events" id="events"></ol>
+        <p class="empty" id="events-empty">Nothing yet. Walk between this PC and your router and it will show up here.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot reveal" style="--d:.6s">
+    <span>Reads your connection's signal strength every 0.4 s and flags movement when it fluctuates well above the calm baseline.</span>
+    <span id="foot-adapter"></span>
+  </footer>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

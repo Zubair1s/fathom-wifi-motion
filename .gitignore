@@ -1,0 +1,16 @@
+# Build output (Fathom.exe is published as a GitHub Release instead)
+dist/
+build/work/
+build/*.spec
+
+# Personal calibration and sensitivity
+settings.json
+
+# Python
+__pycache__/
+*.pyc
+
+# Local editor / tool config
+.claude/
+.vscode/
+.idea/
