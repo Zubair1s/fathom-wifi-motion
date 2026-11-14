@@ -68,7 +68,7 @@ Or double-click `start.bat`.
 
 ```bash
 pip install pyinstaller pillow
-```
+``` 
 
 Then double-click `build.bat`. The result is `dist\Fathom.exe`.
 
