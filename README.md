@@ -2,6 +2,13 @@
 
 **WiFi motion sensing with nothing but your PC.**
 
+![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)
+![Platform](https://img.shields.io/badge/platform-Windows-0078D4?logo=windows&logoColor=white)
+![Dependencies](https://img.shields.io/badge/dependencies-none-2ea44f)
+![License](https://img.shields.io/badge/license-MIT-blue)
+
+![Fathom dashboard detecting two movements](docs/screenshot.png)
+
 Fathom notices when someone moves in a room by watching the WiFi signal between your PC and your router. Your body is mostly water, and water absorbs WiFi, so when someone walks through that path the signal starts jumping around. Fathom measures those jumps a few times per second and shows a live dashboard in your browser.
 
 It needs no camera, microphone or extra hardware, and nothing leaves your computer.
@@ -86,6 +93,10 @@ build/
 build.bat          builds Fathom.exe with PyInstaller
 start.bat          runs from source
 ```
+
+## License
+
+[MIT](LICENSE)
 
 ## Why "Fathom"
 
